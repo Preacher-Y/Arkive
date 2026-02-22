@@ -5,10 +5,10 @@ export const AuthLayout = () => {
   const isLogin = location.pathname === '/login';
 
   return (
-    <div className="auth-reference-bg min-h-dvh overflow-y-auto px-4 py-4 text-slate-900 sm:px-6 lg:overflow-hidden lg:px-8 lg:py-6">
+    <div className="auth-reference-bg min-h-dvh overflow-y-auto px-4 py-4 text-slate-900 sm:px-6 lg:overflow-hidden lg:px-8 lg:py-4">
       <div className="mx-auto flex w-full max-w-7xl items-start lg:h-[calc(100dvh-3rem)] lg:items-center">
-        <div className="w-full overflow-hidden rounded-4xl border border-white/20 bg-white shadow-2xl shadow-black/35">
-          <div className="grid lg:h-full xl:min-h-175 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="w-full overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl shadow-black/35">
+          <div className="grid lg:h-full lg:min-h-[720px] xl:min-h-[760px] lg:grid-cols-[1.05fr_0.95fr]">
             <section className="auth-visual-panel relative hidden overflow-hidden lg:flex flex-col justify-between p-8 text-white xl:p-10">
               
               <div className="relative z-10 flex items-center gap-3 pt-6">
@@ -51,7 +51,7 @@ export const AuthLayout = () => {
                     <img
                       src="/Arkive.svg"
                       alt="Arkive logo"
-                      className="h-8 w-8 p-1"
+                      className="h-8 w-8"
                     />
                     <span>Arkive</span>
                   </div>

@@ -18,6 +18,7 @@ import { ColumnComponent } from '../components/board/ColumnComponent';
 import { TaskDetailsPanel } from '../components/board/TaskDetailsPanel';
 import { BackgroundPicker } from '../components/board/BackgroundPicker';
 import { MemberPicker } from '../components/board/MemberPicker';
+import { SlidePanel } from '../components/shared/SlidePanel';
 import { useAppStore } from '../store/AppStoreContext';
 import type { Column, Task } from '../types/models';
 import { ui } from '../theme';
@@ -86,7 +87,7 @@ export const BoardPage = () => {
     setBoardBackground,
   } = useAppStore();
 
-  const [isMembersSectionOpen, setMembersSectionOpen] = useState(true);
+  const [isMembersSectionOpen, setMembersSectionOpen] = useState(false);
   const [isBackgroundPickerOpen, setBackgroundPickerOpen] = useState(false);
   const [taskPanelState, setTaskPanelState] = useState<BoardTaskPanelState>(null);
   const [newColumnTitle, setNewColumnTitle] = useState('');
@@ -210,13 +211,13 @@ export const BoardPage = () => {
 
   return (
     <div
-      className="min-h-[calc(100vh-65px)]"
+      className="h-[calc(100dvh-65px)] overflow-hidden"
       style={{
         background: currentBackground,
       }}
     >
-      <div className="min-h-[calc(100vh-65px)] bg-white/70">
-        <div className="mx-auto max-w-[1700px] px-4 py-6 sm:px-6">
+      <div className="h-full overflow-hidden bg-white/70">
+        <div className="mx-auto flex h-full max-w-[1700px] flex-col px-4 py-4 sm:px-6">
           <nav aria-label="Breadcrumb" className="mb-3">
             <ol className="flex items-center gap-2 text-sm text-slate-500">
               <li>
@@ -232,22 +233,11 @@ export const BoardPage = () => {
           <BoardHeader
             board={board}
             members={boardMembers}
-            onToggleMembersPanel={() => setMembersSectionOpen((value) => !value)}
+            onToggleMembersPanel={() => setMembersSectionOpen(true)}
             onOpenBackgroundPicker={() => setBackgroundPickerOpen(true)}
           />
 
-          {isMembersSectionOpen ? (
-            <div className="mt-4">
-              <MemberPicker
-                users={allUsers}
-                boardMemberIds={board.memberIds}
-                ownerId={board.memberIds[0]}
-                onToggleUser={(userId) => toggleBoardMember(board.id, userId)}
-              />
-            </div>
-          ) : null}
-
-          <div className="mt-6">
+          <div className="mt-4 min-h-0 flex-1">
             <DndContext
               sensors={sensors}
               collisionDetection={closestCorners}
@@ -255,7 +245,7 @@ export const BoardPage = () => {
               onDragCancel={handleDragCancel}
               onDragEnd={handleDragEnd}
             >
-              <div className="flex gap-4 overflow-x-auto pb-4">
+              <div className="flex h-full min-h-0 gap-4 overflow-x-auto overflow-y-hidden pb-2">
                 {orderedColumns.map((column) => {
                   const tasks = column.taskIds
                     .map((taskId) => state.tasks[taskId])
@@ -284,7 +274,7 @@ export const BoardPage = () => {
                   );
                 })}
 
-                <section className="h-fit w-[320px] shrink-0 rounded-2xl border border-dashed border-slate-300 bg-white p-3 shadow-sm">
+                <section className="h-fit w-[320px] shrink-0 self-start rounded-2xl border border-dashed border-slate-300 bg-white p-3 shadow-sm">
                   {showAddColumnForm ? (
                     <form
                       onSubmit={(event) => {
@@ -394,6 +384,41 @@ export const BoardPage = () => {
         onClose={() => setBackgroundPickerOpen(false)}
         onSelect={(background) => setBoardBackground(board.id, currentUser.id, background)}
       />
+
+      <SlidePanel
+        title="Friends on this board"
+        open={isMembersSectionOpen}
+        onClose={() => setMembersSectionOpen(false)}
+        widthClassName="w-full max-w-2xl"
+      >
+        <div className="flex h-full flex-col">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="font-display text-xl font-semibold text-slate-900">Friends on this board</h2>
+              <p className="mt-1 text-sm text-slate-600">
+                Add or remove existing users from this board.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setMembersSectionOpen(false)}
+              className={ui.buttonSecondary}
+              aria-label="Close members panel"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <MemberPicker
+              users={allUsers}
+              boardMemberIds={board.memberIds}
+              ownerId={board.memberIds[0]}
+              onToggleUser={(userId) => toggleBoardMember(board.id, userId)}
+            />
+          </div>
+        </div>
+      </SlidePanel>
     </div>
   );
 };

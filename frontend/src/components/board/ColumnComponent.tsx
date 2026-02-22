@@ -49,47 +49,47 @@ export const ColumnComponent = ({
     <section className="flex h-full w-[340px] shrink-0 flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
       <div className="mb-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5">
         <div className="flex items-start justify-between gap-2">
-        {isEditingTitle ? (
-          <form onSubmit={handleRenameSubmit} className="flex-1">
-            <label htmlFor={`rename-column-${column.id}`} className="sr-only">
-              Rename column
-            </label>
-            <input
-              id={`rename-column-${column.id}`}
-              type="text"
-              value={titleDraft}
-              onChange={(event) => setTitleDraft(event.target.value)}
-              onBlur={() => setEditingTitle(false)}
-              className={ui.input}
-              autoFocus
-            />
-          </form>
-        ) : (
-          <button
-            type="button"
-            onClick={() => {
-              setTitleDraft(column.title);
-              setEditingTitle(true);
-            }}
-            className="focus-ring flex-1 rounded-xl px-2 py-1 text-left"
-            aria-label={`Rename column ${column.title}`}
-            title="Rename column"
-          >
-            <h2 className="font-display text-base font-semibold text-slate-900">{column.title}</h2>
-            <p className="text-xs text-slate-500">{tasks.length} tasks</p>
-          </button>
-        )}
+          {isEditingTitle ? (
+            <form onSubmit={handleRenameSubmit} className="flex-1">
+              <label htmlFor={`rename-column-${column.id}`} className="sr-only">
+                Rename column
+              </label>
+              <input
+                id={`rename-column-${column.id}`}
+                type="text"
+                value={titleDraft}
+                onChange={(event) => setTitleDraft(event.target.value)}
+                onBlur={() => setEditingTitle(false)}
+                className={ui.input}
+                autoFocus
+              />
+            </form>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setTitleDraft(column.title);
+                setEditingTitle(true);
+              }}
+              className="focus-ring flex-1 rounded-xl px-2 py-1 text-left"
+              aria-label={`Rename column ${column.title}`}
+              title="Rename column"
+            >
+              <h2 className="font-display text-base font-semibold text-slate-900">{column.title}</h2>
+              <p className="text-xs text-slate-500">{tasks.length} tasks</p>
+            </button>
+          )}
 
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => onDeleteColumn(column)}
-            className="focus-ring rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-100"
-            aria-label={`Delete column ${column.title}`}
-          >
-            Delete
-          </button>
-        </div>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => onDeleteColumn(column)}
+              className="focus-ring rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-100"
+              aria-label={`Delete column ${column.title}`}
+            >
+              Delete
+            </button>
+          </div>
         </div>
 
         <button
@@ -104,7 +104,7 @@ export const ColumnComponent = ({
 
       <div
         ref={setNodeRef}
-        className={`min-h-[220px] flex-1 space-y-3 rounded-xl border p-2 transition ${
+        className={`min-h-0 flex-1 space-y-3 overflow-y-auto rounded-xl border p-2 pr-1 transition ${
           isOver ? 'border-blue-300 bg-blue-50/70' : 'border-slate-200 bg-slate-50'
         }`}
       >
