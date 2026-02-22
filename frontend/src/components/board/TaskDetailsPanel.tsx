@@ -144,7 +144,7 @@ export const TaskDetailsPanel = ({
         {mode ? (
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="space-y-4 overflow-y-auto pr-1">
-              <div>
+              <div className="px-2">
                 <label htmlFor="task-title" className="mb-1.5 block text-sm font-medium text-slate-700">
                   Title
                 </label>
