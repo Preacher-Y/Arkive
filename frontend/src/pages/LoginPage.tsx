@@ -51,7 +51,7 @@ export const LoginPage = () => {
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="mb-7 text-center">
-        <h2 className="font-serif text-4xl font-semibold tracking-tight text-slate-900 xl:text-5xl">
+        <h2 className="font-serif text-4xl font-semibold tracking-tight text-slate-900 ">
           Welcome Back
         </h2>
         <p className="mt-3 text-sm text-slate-600">

@@ -15,7 +15,7 @@ export const AppShell = () => {
         <div className="mx-auto flex max-w-400 items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link to="/boards" className="focus-ring inline-flex items-center gap-3 rounded-2xl px-2 py-1">
             <img
-              src="/Arkive.svg"
+              src="/Arkive_i.svg"
               alt="Arkive logo"
               className="h-9 w-9"
             />
