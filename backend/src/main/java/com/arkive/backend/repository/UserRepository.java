@@ -3,9 +3,17 @@ package com.arkive.backend.repository;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.*;
 
+import com.arkive.backend.DTOs.user.UserDTO;
 import com.arkive.backend.model.User;
+import java.util.List;
 
+
+
+@Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
-    
+    UserDTO findByEmail(String email);
+    List<UserDTO> findByName(String name);
+
 }
