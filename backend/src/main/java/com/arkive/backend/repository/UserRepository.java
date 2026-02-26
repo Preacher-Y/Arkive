@@ -7,13 +7,15 @@ import org.springframework.stereotype.*;
 
 import com.arkive.backend.DTOs.user.UserDTO;
 import com.arkive.backend.model.User;
+
 import java.util.List;
+import java.util.Optional;
 
 
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
-    UserDTO findByEmail(String email);
+    Optional<User> findByEmail(String email);
     List<UserDTO> findByName(String name);
 
 }

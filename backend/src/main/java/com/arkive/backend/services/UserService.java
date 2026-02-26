@@ -1,13 +1,13 @@
 package com.arkive.backend.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.arkive.backend.DTOs.user.UserDTO;
-import com.arkive.backend.DTOs.user.UserSignUpDTO;
+import com.arkive.backend.DTOs.user.*;
 import com.arkive.backend.model.User;
 import com.arkive.backend.repository.UserRepository;
 
@@ -16,17 +16,21 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.arkive.backend.util.userMapper;
+
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepo;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private userMapper userMapper;
 
     public String addNewUser(UserSignUpDTO user){
-        UserDTO existingUser = userRepo.findByEmail(user.email());
+        Optional<User> existingUser = userRepo.findByEmail(user.email());
 
-        if(existingUser != null){
+        if(existingUser.isPresent()){
             return "The User with that email already exist";
         } else {
             User newUser = new User();
@@ -38,14 +42,21 @@ public class UserService {
         }
     }
 
+    public UserDTO login(UserLoginDTO req) {
+        User user = userRepo.findByEmail(req.email())
+            .orElseThrow(() -> new EntityNotFoundException("Invalid credentials"));
+
+        if (!encoder.matches(req.password(), user.getPassword())) {
+            throw new EntityNotFoundException("Invalid credentials");
+        }
+
+        return userMapper.toDto(user);
+    }
+
     public List<UserDTO> getAllUsers() {
         List<UserDTO> users = userRepo.findAll()
                 .stream()
-                .map(user -> UserDTO.builder()
-                        .id(user.getId())
-                        .name(user.getName())
-                        .email(user.getEmail())
-                        .build())
+                .map(userMapper::toDto)
                 .toList();
 
         if(users == null || users.isEmpty()){
@@ -56,13 +67,9 @@ public class UserService {
     }
         
     public UserDTO getUserByEmail(String email){
-        UserDTO user = userRepo.findByEmail(email);
-
-        if(user != null){
-            return user;
-        } else {
-            throw new EntityNotFoundException("User Not Found");
-        }
+        User user = userRepo.findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException("User Not Found"));
+        return userMapper.toDto(user);
     }
 
     public List<UserDTO> getUsersByName(String name){

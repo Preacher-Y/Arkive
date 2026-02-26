@@ -11,8 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.arkive.backend.DTOs.user.UserDTO;
-import com.arkive.backend.DTOs.user.UserSignUpDTO;
+import com.arkive.backend.DTOs.user.*;
 import com.arkive.backend.services.UserService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -62,7 +61,7 @@ public class UserController {
         }
     }
     
-    @PostMapping(produces=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createNewUser(@RequestBody UserSignUpDTO body){
         String res = userService.addNewUser(body);
 
@@ -71,6 +70,18 @@ public class UserController {
         }
 
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping(value="/login", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> loginUser(@RequestBody UserLoginDTO body){
+        try{
+            UserDTO user = userService.login(body);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch(EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PatchMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
