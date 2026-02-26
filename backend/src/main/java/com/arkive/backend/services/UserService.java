@@ -42,17 +42,6 @@ public class UserService {
         }
     }
 
-    public UserDTO login(UserLoginDTO req) {
-        User user = userRepo.findByEmail(req.email())
-            .orElseThrow(() -> new EntityNotFoundException("Invalid credentials"));
-
-        if (!encoder.matches(req.password(), user.getPassword())) {
-            throw new EntityNotFoundException("Invalid credentials");
-        }
-
-        return userMapper.toDto(user);
-    }
-
     public List<UserDTO> getAllUsers() {
         List<UserDTO> users = userRepo.findAll()
                 .stream()

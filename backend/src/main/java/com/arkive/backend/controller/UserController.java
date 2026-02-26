@@ -72,18 +72,6 @@ public class UserController {
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value="/login", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loginUser(@RequestBody UserLoginDTO body){
-        try{
-            UserDTO user = userService.login(body);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch(EntityNotFoundException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        }catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        }
-    }
-
     @PatchMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserEmailAndName(
         @PathVariable UUID id,
