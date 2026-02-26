@@ -11,7 +11,7 @@ public record UserSignUpDTO(
 
     @NotBlank
     @Email
-    String Email,
+    String email,
 
     @NotBlank
     @Size(min = 8, max = 50)
