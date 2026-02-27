@@ -1,7 +1,6 @@
 package com.arkive.backend.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import com.arkive.backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.arkive.backend.util.userMapper;
 
@@ -23,24 +21,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
     @Autowired
-    private PasswordEncoder encoder;
-    @Autowired
     private userMapper userMapper;
-
-    public String addNewUser(UserSignUpDTO user){
-        Optional<User> existingUser = userRepo.findByEmail(user.email());
-
-        if(existingUser.isPresent()){
-            return "The User with that email already exist";
-        } else {
-            User newUser = new User();
-            newUser.setName(user.name().toLowerCase());
-            newUser.setEmail(user.email());
-            newUser.setPassword(encoder.encode(user.password()));
-            userRepo.save(newUser);
-            return "Added the user Successfully";
-        }
-    }
 
     public List<UserDTO> getAllUsers() {
         List<UserDTO> users = userRepo.findAll()

@@ -6,9 +6,12 @@ import org.springframework.stereotype.Service;
 
 import com.arkive.backend.DTOs.user.UserDTO;
 import com.arkive.backend.DTOs.user.UserLoginDTO;
+import com.arkive.backend.DTOs.user.UserSignUpDTO;
 import com.arkive.backend.repository.UserRepository;
 import com.arkive.backend.util.userMapper;
 import com.arkive.backend.model.User;
+
+import java.util.Optional;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -31,5 +34,20 @@ public class AuthService {
         }
 
         return userMapper.toDto(user);
+    }
+
+    public String register(UserSignUpDTO user){
+        Optional<User> existingUser = userRepo.findByEmail(user.email());
+
+        if(existingUser.isPresent()){
+            return "The User with that email already exist";
+        } else {
+            User newUser = new User();
+            newUser.setName(user.name().toLowerCase());
+            newUser.setEmail(user.email());
+            newUser.setPassword(encoder.encode(user.password()));
+            userRepo.save(newUser);
+            return "Added the user Successfully";
+        }
     }
 }

@@ -60,17 +60,6 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    @PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createNewUser(@RequestBody UserSignUpDTO body){
-        String res = userService.addNewUser(body);
-
-        if(res.equals("Added the user Successfully")){
-            return new ResponseEntity<>(res, HttpStatus.CREATED);
-        }
-
-        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
-    }
 
     @PatchMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserEmailAndName(
