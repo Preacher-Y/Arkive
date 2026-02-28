@@ -1,20 +1,19 @@
 package com.arkive.backend.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.arkive.backend.DTOs.user.*;
-import com.arkive.backend.model.User;
-import com.arkive.backend.repository.UserRepository;
-
-import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.transaction.annotation.Transactional;
 
+import com.arkive.backend.DTOs.user.UserDTO;
+import com.arkive.backend.model.User;
+import com.arkive.backend.repository.UserRepository;
 import com.arkive.backend.util.userMapper;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService {
@@ -76,6 +75,20 @@ public class UserService {
         }
 
         user.setEmail(email);
+    }
+
+    public UserDTO getUserById(UUID id) {
+        Optional<User> user = userRepo.findById(id);
+
+        if(user == null){
+            throw new EntityNotFoundException("User Not found");
+        }
+
+        return UserDTO.builder()
+                    .id(user.get().getId())
+                    .name(user.get().getName())
+                    .email(user.get().getEmail())
+                    .build();
     }
 
 }
