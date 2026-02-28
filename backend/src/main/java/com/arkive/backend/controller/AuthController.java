@@ -1,29 +1,39 @@
 package com.arkive.backend.controller;
 
+import java.time.Duration;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseCookie;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.arkive.backend.DTOs.user.*;
+import com.arkive.backend.config.AuthCookieProperties;
 import com.arkive.backend.services.AuthService;
 import com.arkive.backend.services.JwtService;
 
-import java.time.Duration;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.persistence.EntityNotFoundException;
 
 @Controller
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private JwtService jwtService;
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
+
+    private final AuthService authService;
+    private final JwtService jwtService;
+    private final AuthCookieProperties authCookieProperties;
+
+    public AuthController(AuthService authService, JwtService jwtService, AuthCookieProperties authCookieProperties) {
+        this.authService = authService;
+        this.jwtService = jwtService;
+        this.authCookieProperties = authCookieProperties;
+    }
 
     @PostMapping(value="/login", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> loginUser(@RequestBody UserLoginDTO body, HttpServletResponse res){
@@ -32,14 +42,22 @@ public class AuthController {
 
             String accessToken = jwtService.generateToken(user.id(), user.email());
 
-            ResponseCookie accessCookie = ResponseCookie.from("access_token",accessToken)
+            ResponseCookie.ResponseCookieBuilder accessCookieBuilder = ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
                                             .httpOnly(true)
-                                            .secure(true)
-                                            .sameSite("Lax")
+                                            .secure(authCookieProperties.isSecure())
+                                            .sameSite(authCookieProperties.getSameSite())
                                             .path("/")
-                                            .maxAge(Duration.ofMinutes(15))
-                                            .build();
+                                            .maxAge(Duration.ofSeconds(authCookieProperties.getMaxAgeSeconds()));
+
+            String cookieDomain = authCookieProperties.getDomain();
+            if (cookieDomain != null && !cookieDomain.isBlank()) {
+                accessCookieBuilder.domain(cookieDomain);
+            }
+
+            ResponseCookie accessCookie = accessCookieBuilder.build();
+
             res.addHeader("Set-Cookie",accessCookie.toString());
+            
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch(EntityNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
